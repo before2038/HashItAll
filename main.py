@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+
 import os
 import hashlib
 import argparse
@@ -10,7 +11,14 @@ import subprocess
 #hash the file using the haslib library
 #only sha256 is supported for now - will consider adding more
 def hash_file(filepath):
-    hasher = hashlib.sha256()
+
+    if Selected_Algorithm.get() == "MD5":
+        hasher = hashlib.md5()
+    elif Selected_Algorithm.get() == "Sha1":
+        hasher = hashlib.sha1()
+    elif Selected_Algorithm.get() == "Sha256":
+        hasher = hashlib.sha256()
+
     with open(filepath, 'rb') as f:
         buf = f.read()
         hasher.update(buf)
@@ -89,16 +97,27 @@ output_file_button.grid(row=1, column=0, sticky='ew', padx=5, pady=5)
 output_file_entry = ttk.Entry(main_frame, textvariable=output_file, width=50)
 output_file_entry.grid(row=1, column=1, sticky='ew', padx=5, pady=5)
 
+Selected_Algorithm = tk.StringVar()
+
+algo_label = ttk.Label(main_frame, text="Algorithm:")
+algo_label.grid(row=2, column=0, sticky=tk.E, padx=5, pady=5)
+
+algo_dropdown = ttk.Combobox(main_frame, textvariable=Selected_Algorithm)
+algo_dropdown.grid(row=2, column=1, sticky='ew', padx=5, pady=5)
+algo_dropdown['values'] = ('MD5', 'Sha1', 'Sha256')
+algo_dropdown.current(0)
+
 start_button = ttk.Button(main_frame, text="Start Hashing", command=hash_directory)
-start_button.grid(row=2, column=0, columnspan=2, sticky='ew', padx=5, pady=5)
+start_button.grid(row=3, column=0, columnspan=2, sticky='ew', padx=5, pady=5)
 
 progress = ttk.Progressbar(main_frame, orient="horizontal", length=100, mode="determinate")
-progress.grid(row=3, column=1, sticky='ew', padx=5, pady=5)
+progress.grid(row=4, column=1, sticky='ew', padx=5, pady=5)
 
 progress_label = ttk.Label(main_frame, text="Progress:")
-progress_label.grid(row=3, column=0, sticky=tk.E, padx=5, pady=5)
+progress_label.grid(row=4, column=0, sticky=tk.E, padx=5, pady=5)
 
 open_file_button = ttk.Button(main_frame, text="Open Hash File", command=open_hash_file, state='disabled')
 open_file_button.grid(row=5, column=0, columnspan=2, sticky='ew', padx=5, pady=5)
 
 root.mainloop()
+
